@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
+    integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
+    crossorigin=""/>
+
+    <!-- Make sure you put this AFTER Leaflet's CSS -->
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
+    integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
+    crossorigin=""></script>
+    
+    <style>
+        #mymap { height: 400px; }
+    </style>
+
+    <title>Geolocation</title>
+</head>
+<body>
+    <h1>Geolocation App</h1>
+    <p>
+        latitude: <span id="latitude"></span>&deg;<br />
+        longitude: <span id="longitude"></span>&deg;
+    </p>
+    <button id="geolocate">geolocate</button>
+    <div id="mymap"></div>
+    <script>
+        document.getElementById('geolocate').addEventListener('click',event => {
+            if ('geolocation' in navigator) {
+            console.log('geolocation available');
+            navigator.geolocation.getCurrentPosition(position => {
+                lat = position.coords.latitude;
+                lon = position.coords.longitude;
+                console.log(position);
+                console.log(lat, lon);
+                document.getElementById('latitude').textContent = lat;
+                document.getElementById('longitude').textContent = lon;
+
+                const mymap = L.map('mymap').setView([lat, lon], 15);
+                const attribution =
+                    '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors';
+                const tileUrl = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
+                const tiles = L.tileLayer(tileUrl, { attribution });
+                tiles.addTo(mymap);
+                const marker = L.marker([lat, lon]).addTo(mymap);
+            });
+            } else {
+                console.log('geolocation is not available');
+            }
+        });
+        
+    </script>
+</body>
+</html>
