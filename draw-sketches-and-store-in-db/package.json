@@ -1,0 +1,14 @@
+{
+  "name": "server-side-js",
+  "version": "1.0.0",
+  "description": "Data Selfie App",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Anurag Bambardekar",
+  "dependencies": {
+    "express": "^4.16.4",
+    "nedb": "^1.8.0"
+  }
+}
