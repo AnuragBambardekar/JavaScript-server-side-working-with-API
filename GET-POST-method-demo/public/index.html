@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h1>Post Method Demo</h1>
+    <p>
+      latitude: <span id="latitude"></span>&deg;<br />
+      longitude: <span id="longitude"></span>&deg;
+    </p>
+
+    <label for="vegetable">enter your favorite vegetable</label>
+    <input id="vegetable" value="arugula" /><br>
+
+    <button id="Post">Post Data to DB</button><br>
+    <button id="Get">Get Data from DB in console</button><br>
+
+    <script>
+      //get latitude and longitude from system
+      let lat, lon;
+
+      if ('geolocation' in navigator) {
+        console.log('geolocation available');
+        navigator.geolocation.getCurrentPosition(async position => {
+          lat = position.coords.latitude;
+          lon = position.coords.longitude;
+          document.getElementById('latitude').textContent = lat;
+          document.getElementById('longitude').textContent = lon;
+        });
+      } else {
+        console.log('geolocation not available');
+      }
+
+
+      
+      //button to post data to DB
+      const button1 = document.getElementById('Post');
+      button1.addEventListener('click', async event => {
+        const vegetable = document.getElementById('vegetable').value;
+        const data = { lat, lon, vegetable};
+
+        const options = {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(data)
+        };
+        const response = await fetch('/api', options);
+        const json = await response.json();
+        console.log(json);
+      });
+
+      //button to get data from DB
+      const button2 = document.getElementById('Get');
+      button2.addEventListener('click', async event => {
+        
+        const options = {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        };
+
+        const response = await fetch('/api', options);
+        const json = await response.json();
+        console.log(json);
+
+        //display data from DB
+        for(item of json){
+          const root = document.createElement('p');
+          
+          const vegetable = document.createElement('div');
+          vegetable.textContent = `vegetable : ${item.vegetable}`;
+          
+          const geolocation = document.createElement('div');
+          geolocation.textContent = `${item.lat}&deg;, ${item.lon}&deg;`;
+
+          const date = document.createElement('div');
+          const dateString = new Date(item.timestamp).toLocaleString();
+          date.textContent = dateString;
+
+          root.append(vegetable,geolocation,date);
+          document.body.append(root);
+
+        }
+      });
+
+    
+    </script>
+</body>
+</html>
